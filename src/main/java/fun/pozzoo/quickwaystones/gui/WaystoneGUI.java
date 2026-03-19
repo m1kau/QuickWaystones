@@ -156,6 +156,16 @@ public class WaystoneGUI implements Listener {
         // Waystone teleport
         WaystoneData ws = holder.slotToWaystone.get(slot);
         if (ws != null) {
+            int xpCost = QuickWaystones.getInstance().getConfig().getInt("Settings.XpCost", 5);
+            
+            if (player.getLevel() < xpCost) {
+                String message = QuickWaystones.getInstance().getConfig().getString("Messages.InsufficientXp", "You need {xp} XP level(s) to use this waystone!");
+                message = message.replace("{xp}", String.valueOf(xpCost));
+                player.sendMessage(StringUtils.formatString("<red>" + message));
+                return;
+            }
+            
+            player.setLevel(player.getLevel() - xpCost);
             player.teleport(ws.getLocation().clone().add(0.5, 1, 0.5));
             player.getWorld().spawnParticle(Particle.PORTAL, player.getLocation(), 5);
             player.playSound(player, Sound.ENTITY_FOX_TELEPORT, 0.5f, 1f);

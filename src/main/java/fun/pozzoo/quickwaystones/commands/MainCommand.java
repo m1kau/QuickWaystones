@@ -22,6 +22,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         // Register subcommands
         subCommands.put("setHideUndiscoveredWaystones", new SetHideUndiscoveredWaystones(plugin));
         subCommands.put("setEnableWaystonePass", new SetEnableWaystonePass(plugin));
+        subCommands.put("setXpCost", new SetXpCost(plugin));
         subCommands.put("help", new HelpSubCommand(subCommands));
     }
 
