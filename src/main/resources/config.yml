@@ -1,9 +1,11 @@
 Settings:
   HideUndiscoveredWaystones: true
   EnableWaystonePass: true
+  XpCost: 5
 Messages:
   WaystoneActivated: "Waystone Activated"
   WaystoneBrokenByOther: "This waystone isn't yours"
   WaystoneDiscovered: "Waystone Discovered"
   WaystoneAlreadyDiscovered: "Waystone is already discovered"
   WaystonePassBound: "WaystonePass bound to"
+  InsufficientXp: "You need {xp} XP level(s) to use this waystone!"
