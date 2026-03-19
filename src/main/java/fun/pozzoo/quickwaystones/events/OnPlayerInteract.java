@@ -6,9 +6,9 @@ import fun.pozzoo.quickwaystones.gui.WaystoneGUI;
 import fun.pozzoo.quickwaystones.utils.StringUtils;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -56,18 +56,18 @@ public class OnPlayerInteract implements Listener {
         if (event.getClickedBlock().getType() != Material.LODESTONE) return;
         if (event.getPlayer().isSneaking()) return;
 
-        Block block = event.getClickedBlock();
+        Location location = event.getClickedBlock().getLocation();
 
         event.setCancelled(true);
 
         QuickWaystones.getPlayerAccess().computeIfAbsent(player.getUniqueId(), k -> new HashSet<>());
 
-        if (!QuickWaystones.getWaystonesMap().containsKey(block.getLocation())) {
+        if (!QuickWaystones.getWaystonesMap().containsKey(location)) {
             player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
             player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneActivated")));
-            QuickWaystones.createWaystone(block.getLocation(), new WaystoneData(block.getLocation(), player.getUniqueId()));
+            QuickWaystones.createWaystone(location, new WaystoneData(location, player.getUniqueId()));
 
-            QuickWaystones.getPlayerAccess().get(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(block.getLocation()).getId());
+            QuickWaystones.getPlayerAccess().get(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(location).getId());
 
             return;
         }
@@ -77,10 +77,10 @@ public class OnPlayerInteract implements Listener {
                 TextComponent textComponent = (TextComponent) event.getItem().getItemMeta().displayName();
 
                 if (textComponent == null) return;
-                if (textComponent.content().equals(QuickWaystones.getWaystonesMap().get(block.getLocation()).getName()))
+                if (textComponent.content().equals(QuickWaystones.getWaystonesMap().get(location).getName()))
                     return;
 
-                QuickWaystones.getWaystone(block.getLocation()).setName(textComponent.content());
+                QuickWaystones.getWaystone(location).setName(textComponent.content());
                 player.getInventory().getItemInMainHand().subtract();
 
                 return;
@@ -88,7 +88,7 @@ public class OnPlayerInteract implements Listener {
 
             if (event.getItem().getType() == Material.PAPER && this.plugin.getConfig().getBoolean("Settings.EnableWaystonePass")) {
                 player.getInventory().getItemInMainHand().subtract();
-                WaystoneData waystone = QuickWaystones.getWaystone(block.getLocation());
+                WaystoneData waystone = QuickWaystones.getWaystone(location);
                 HashMap<Integer, ItemStack> toDrop = player.getInventory().addItem(QuickWaystones.getWaystonePass().createItem(waystone.getId()));
 
                 player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
@@ -100,15 +100,15 @@ public class OnPlayerInteract implements Listener {
         }
 
         if (this.plugin.getConfig().getBoolean("Settings.HideUndiscoveredWaystones")) {
-            if (!QuickWaystones.getPlayerAccess().get(player.getUniqueId()).contains(QuickWaystones.getWaystonesMap().get(block.getLocation()).getId())) {
+            if (!QuickWaystones.getPlayerAccess().get(player.getUniqueId()).contains(QuickWaystones.getWaystonesMap().get(location).getId())) {
                 player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                 player.sendMessage(StringUtils.formatString("<gold>" + this.plugin.getConfig().getString("Messages.WaystoneDiscovered")));
-                QuickWaystones.getPlayerAccess().get(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(block.getLocation()).getId());
+                QuickWaystones.getPlayerAccess().get(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(location).getId());
             }
         } else {
-            QuickWaystones.getPlayerAccess().get(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(block.getLocation()).getId());
+            QuickWaystones.getPlayerAccess().get(player.getUniqueId()).add(QuickWaystones.getWaystonesMap().get(location).getId());
         }
 
-        WaystoneGUI.runGUI(player);
+        WaystoneGUI.runGUI(player, QuickWaystones.getWaystonesMap().get(location));
     }
 }
