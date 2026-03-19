@@ -20,7 +20,7 @@ QuickWaystones is a Minecraft plugin that brings the convenience of instant trav
 ## Contribution
 We welcome all kinds of contributions! Open feature requests, report issues, or submit pull requests to help improve QuickWaystones.
 
-## 🙏 Thanks To
+## Thanks To
 ### Contributors
 - [m1kau](https://github.com/m1kau) — for the XP cost feature
 
